@@ -1,0 +1,28 @@
+{
+  "name": "blogapp",
+  "version": "1.0.0",
+  "description": "Blog, Post, Users",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/YoussefOuirini/Blog-Application.git"
+  },
+  "keywords": [
+    "Blog",
+    "Posts",
+    "Users",
+    "Comment"
+  ],
+  "author": "Youssef Ouirini",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/YoussefOuirini/Blog-Application/issues"
+  },
+  "homepage": "https://github.com/YoussefOuirini/Blog-Application#readme",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}

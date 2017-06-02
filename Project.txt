@@ -1,0 +1,52 @@
+Project Specification of Blog Application:
+Create a blogging application that allows users to do the following:
+- register an account:
+	- create a form register.pug
+	- create a app.post in app
+- login
+	- create a app.post
+	- create a form login.pug
+- logout
+	- create an input button that sets the session to logged of
+
+Once logged in, a user should be able to:
+- create a post
+	- create a app.post
+	- create a form createPost.pug
+- view a list of their own posts
+	- create a app.get
+	- create a posts.pug that shows all the posts of the user
+- view a list of everyone's posts
+	- create a app.get
+	- create a allPosts.pug that shows all posts of all users
+	- or that shows all posts in posts.pug instead of only the user's posts
+- view a specific post, including the comments people have made about it
+	- create an app.get that gets a specific post with comments on that posts
+- leave a comment on a post
+	- create a form beneath a post so that people can react on it
+	- render posts beneath posts
+
+Prior to coding, determine the following:
+- your tables: what columns will they have? How will they connect to one another?
+	- create a table called users
+	- create a table called posts
+	- Create a table called comments
+	- One user has many posts
+	- One post has one user
+	- One post has many comments
+	- One comment has one post
+- make a diagram showing the relationships between tables.
+- your routes: what routes should you have? What should each route do?
+Once you are done designing your application, then proceed with coding.
+Submit this document in a text file as part of your application.
+
+Plan:
+
+1.) Create a app.js
+	- set up configuration
+	- create database in postgres
+2.) Create a form to register
+3.) Create a form to login
+4.) Create a form to post
+5.) Create a page rendering all posts
+6.) create a page rendering

@@ -1,0 +1,22 @@
+html
+	head
+		title Register yourself!
+	body
+		nav
+			div
+				a(href= "/") Index
+			div
+				a(href= "/search") Search
+		h2 Register yourself by filling out this handy form!
+		form(action='/register' method='post')
+			h3 Type in your first name:
+			input(name= 'firstname')
+			h3 Type in your last name:
+			input(name= 'lastname')
+			h3 Type in your email:
+			input(name= 'email')
+			h3 Type in your password:
+			input(name= 'password')
+			br
+			br
+			input(type= 'submit' value= "Zuckerberg: People just submitted info. I don't know why. They trust me. Dumb f's...")
