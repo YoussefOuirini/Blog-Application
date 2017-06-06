@@ -141,6 +141,19 @@ app.get('/post', (req,res) =>{
     }
     Post.sync()
     	.then(function(){
+    		// Comment.findAll()
+    		// 	.then((comments)=>{
+    		// 		let promises = []
+    		// 		for (var i=0; i < comments.length; i++) {
+    		// 			promises.push(Comment.findOne({
+    		// 				where: {
+    		// 					id: comments[i].postId
+    		// 				}
+    		// 			}));
+    		// 		}
+    		// 		Promise.all(promises)
+    		// 		.then()
+    		// 	})
     		Post.findAll()
     			.then(function(posts){
     				let promises = []
@@ -152,11 +165,10 @@ app.get('/post', (req,res) =>{
     				}
     				Promise.all(promises)
     				.then((users) => {
-	    				// console.log(post[0].dataValues.title);
-	    				console.log(users)
 	    				res.render('views/post', {
 	    					posts: posts,
-	    					users: users
+	    					users: users,
+	    					comments: comment
 	    				})
     				})
     			}).then().catch(error => console.log(error))
@@ -208,6 +220,7 @@ app.post('/comment', (req,res)=>{
 			}).then(user => {
 				return Comment.create({
 					body: req.body.comment,
+					postId: req.body.messageId,
 					userId: user.id
 				})
 			}).then(function(){

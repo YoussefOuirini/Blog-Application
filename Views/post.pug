@@ -13,11 +13,13 @@ html
 				h2 #{users[index].dataValues.firstname} #{users[index].dataValues.lastname} said:
 				h3 #{message.dataValues.title}
 				p #{message.dataValues.body}
-				//- if comments
-				//- 	each comment in comments
+				if comments
+					each comment, index in comments
+						h4 #{comment[index].dataValues.body}
 				form(action='/comment' method='post')
 					h4 Comment:
 					textarea(name= 'comment' id='comment' placeholder= 'Post your comment!')
+					input(type='hidden' name='messageId' value=message.id)
 					br
 					br
 					input(type='submit' value='Submit your comment!')
