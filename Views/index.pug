@@ -1,0 +1,17 @@
+html
+	head
+		title Index
+	body
+		nav
+			div
+				a(href= "/register") Register!
+			div
+				a(href= "/login") Log In!
+			div 
+				a(href= "/profile") Go to your profile!
+		h1 Welcome to my most awesomest website!
+		if user
+			p Hello there #{user.firstname} #{user.lastname}! Welcome back!
+		else
+			p Login or register to begin!
+		p #{message}

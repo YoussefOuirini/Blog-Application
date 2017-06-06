@@ -4,9 +4,11 @@ html
 	body
 		nav
 			div
-				a(href= "/") Index
+				a(href= "/login") Login
 			div
-				a(href= "/search") Search
+				a(href= "/index") Index
+			div
+				a(href= "/profile") Go to your profile!
 		h2 Register yourself by filling out this handy form!
 		form(action='/register' method='post')
 			h3 Type in your first name:
@@ -15,8 +17,23 @@ html
 			input(name= 'lastname')
 			h3 Type in your email:
 			input(name= 'email')
+			p(id= 'usedemail')
 			h3 Type in your password:
-			input(name= 'password')
+			input(name= 'password' type='password')
 			br
 			br
 			input(type= 'submit' value= "Zuckerberg: People just submitted info. I don't know why. They trust me. Dumb f's...")
+
+
+	//- script.
+
+	//- 	$.post('/register', function(status, response) {
+	//- 		if(response.response === email) {
+	//- 			//show error message with jquery/dom
+	//- 			$("usedemail").text('Email already in use.')
+	//- 		} else {
+	//- 			//- $.hide('.usedemail')
+	//- 			$("#usedemail").text('Email already in use.')
+
+	//- 		}
+	//- 	})

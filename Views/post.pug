@@ -1,0 +1,32 @@
+html
+	head
+		title Post a message!
+	body
+		nav
+			div
+				a(href= "/") Index
+			div
+				a(href= "/profile") Go to your profile!
+		h1 All messages!
+		if posts
+			each message, index in posts
+				h2 #{users[index].dataValues.firstname} #{users[index].dataValues.lastname} said:
+				h3 #{message.dataValues.title}
+				p #{message.dataValues.body}
+				//- if comments
+				//- 	each comment in comments
+				form(action='/comment' method='post')
+					h4 Comment:
+					textarea(name= 'comment' id='comment' placeholder= 'Post your comment!')
+					br
+					br
+					input(type='submit' value='Submit your comment!')
+		h2 Post your awesome message!
+		form(action='/post' method='post')
+			h3 Title:
+			input(name= 'title' id='title' placeholder= 'Type your title')
+			h3 Type in your message:
+			textarea(name= 'message' id='textbox' placeholder= 'Type your message')
+			br
+			br
+			input(type= 'submit' value= "Submit your post!")
