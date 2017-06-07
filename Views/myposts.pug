@@ -8,19 +8,14 @@ html
 			div
 				a(href= "/profile") Go to your profile!
 			div
-				a(href= '/myposts') View all your posts!
-			div
-				a(href='/post') View all posts!
-		h1 All posts
+				a(href='/posts') View all posts!
+		h1 Your messages
 		if posts
 			each post, index in posts
-				//- if users[post.userId]
 				h2 #{post.title}
-				h3 #{users[index].firstname} #{users[index].lastname} said:
-				//- h3 #{users[index].firstname} #{users[index].lastname} said:
+				h3 #{users[index].dataValues.firstname} #{users[index].dataValues.lastname} said:
 				p #{post.body}
 				each comment in comments
-					//- This if statement is added to render the right comment beneath the right post
 					if comment.postId === post.id
 						h4 #{users[comment.userId].firstname} #{users[comment.userId].lastname} commented:
 						p #{comment.body}
@@ -31,10 +26,6 @@ html
 					br
 					br
 					input(type='submit' value='Submit your comment!')
-				//- else
-				//- 	h2 You haven't posted anything yet!
-		else
-			h2 There are no posts yet!
 		h2 Post your awesome message!
 		form(action='/post' method='post')
 			h3 Title:
