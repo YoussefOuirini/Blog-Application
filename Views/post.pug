@@ -9,17 +9,18 @@ html
 				a(href= "/profile") Go to your profile!
 		h1 All messages!
 		if posts
-			each message, index in posts
-				h2 #{users[index].dataValues.firstname} #{users[index].dataValues.lastname} said:
-				h3 #{message.dataValues.title}
-				p #{message.dataValues.body}
-				if comments
-					each comment, index in comments
-						h4 #{comment[index].dataValues.body}
+			each post, index in posts
+				h2 #{post.title}
+				h3 #{users[index].dataValues.firstname} #{users[index].dataValues.lastname} said:
+				p #{post.body}
+				each comment in comments
+					if comment.postId === post.id
+						h4 #{users[comment.userId].firstname}
+						p #{comment.body}
 				form(action='/comment' method='post')
 					h4 Comment:
 					textarea(name= 'comment' id='comment' placeholder= 'Post your comment!')
-					input(type='hidden' name='messageId' value=message.id)
+					input(type='hidden' name='messageId' value=post.id)
 					br
 					br
 					input(type='submit' value='Submit your comment!')

@@ -141,37 +141,39 @@ app.get('/post', (req,res) =>{
     }
     Post.sync()
     	.then(function(){
-    		// Comment.findAll()
-    		// 	.then((comments)=>{
-    		// 		let promises = []
-    		// 		for (var i=0; i < comments.length; i++) {
-    		// 			promises.push(Comment.findOne({
-    		// 				where: {
-    		// 					id: comments[i].postId
-    		// 				}
-    		// 			}));
-    		// 		}
-    		// 		Promise.all(promises)
-    		// 		.then()
-    		// 	})
-    		Post.findAll()
-    			.then(function(posts){
+    		Comment.findAll()
+    			.then((comments)=>{
     				let promises = []
-    				for (var i = 0; i < posts.length; i++) {
-    					promises.push(User.findOne({
+    				for (var i=0; i < comments.length; i++) {
+    					promises.push(Comment.findOne({
     						where: {
-    							id: posts[i].userId}
-    						}));
+    							id: comments[i].postId
+    						}
+    					}));
     				}
     				Promise.all(promises)
-    				.then((users) => {
-	    				res.render('views/post', {
-	    					posts: posts,
-	    					users: users,
-	    					comments: comment
-	    				})
-    				})
+    				.then()
+    				    Post.findAll()
+			    			.then(function(posts){
+			    				let promises = []
+			    				for (var i = 0; i < posts.length; i++) {
+			    					promises.push(User.findOne({
+			    						where: {
+			    							id: posts[i].userId}
+			    						}));
+			    				}
+			    				Promise.all(promises)
+			    				.then((users) => {
+			    					console.log(comments[0].dataValues);
+			    					console.log(posts[0].dataValues);
+				    				res.render('views/post', {
+				    					posts: posts,
+				    					users: users,
+				    					comments: comments
+				    				})
+			    				})
     			}).then().catch(error => console.log(error))
+    			})
     	})
     	.then().catch(error=> console.log(error))
 });
