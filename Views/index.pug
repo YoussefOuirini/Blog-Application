@@ -5,16 +5,17 @@ html
 		nav
 			if user
 				div
-					a(href="/logout") Logout!
-			div
-				a(href= "/register") Register!
-			div
-				a(href= "/login") Log In!
+					a(href="/logout") Logout
+			else
+				div
+					a(href= "/login") Log In!
+				div
+					a(href= "/register") Register!
 			div 
 				a(href= "/profile") Go to your profile!
 		h1 Welcome to my most awesomest website!
 		if user
-			p Hello there #{user.firstname} #{user.lastname}! Welcome back!
+			p Hello there #{user.firstname}, welcome back!
 		else
 			p Login or register to begin!
 		p #{message}

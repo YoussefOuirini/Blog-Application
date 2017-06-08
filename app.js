@@ -1,9 +1,11 @@
+// Seting up the libraries:
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 const session= require('express-session');
-// const sequelize= new Sequelize('postgres://' + process.env.POSTGRES_USER + ":" + process.env.POSTGRES_PASSWORD + '@localhost/blog_app');
+
+// Setting up the link to the database.
 const sequelize= new Sequelize('blog_app', process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
 	host: 'localhost',
 	dialect: 'postgres',
@@ -18,6 +20,7 @@ app.set('views', './');
 app.set('view engine', 'pug');
 app.use(express.static("public"));
 
+// Setting up the tables
 var User = sequelize.define('user', {
 	firstname: Sequelize.STRING,
 	lastname: Sequelize.STRING,
@@ -34,6 +37,7 @@ var Comment= sequelize.define('comment', {
 	body: Sequelize.STRING
 })
 
+// Setting up the model by linking the tables to each other
 Post.belongsTo(User);
 User.hasMany(Post);
 Comment.belongsTo(Post);
@@ -41,12 +45,14 @@ Post.hasMany(Comment);
 Comment.belongsTo(User);
 User.hasMany(Comment);
 
+// Creates session when user logs in
 app.use(session({
 	secret: `#{process.env.SECRET_SESSION}`,
 	resave: true,
 	saveUninitialized: false
 }));
 
+// Goes to the index page, which is the homepage of the blog app
 app.get('/', function (req,res){
 	res.render('views/index', {
 		// You can also use req.session.message so message won't show in the browser
@@ -54,7 +60,7 @@ app.get('/', function (req,res){
 		user: req.session.user
 	});
 });
-
+// Goes to the register page.
 app.get('/register', (req,res) =>{
 	res.render('views/register')
 });
@@ -62,6 +68,7 @@ app.get('/register', (req,res) =>{
 app.post('/register', bodyParser.urlencoded({extended:true}), (req,res) => {
 	User.sync()
 		.then(function(){
+			// Finds if the email is already in the database.
 			User.findOne({
 				where: {
 					email: req.body.email
@@ -93,7 +100,7 @@ app.post('/register', bodyParser.urlencoded({extended:true}), (req,res) => {
 	.then().catch(error => console.log(error))
 })
 
-app.get('/profile', function (req, res) {
+app.get('/profile', (req, res)=> {
     var user = req.session.user;
     if (user === undefined) {
         res.redirect('/?message=' + encodeURIComponent("Please log in to view your profile."));
@@ -121,19 +128,19 @@ app.post('/login', (req, res)=>{
 		where: {
 			email:req.body.email
 		}
-	}).then(function (user) {
+	}).then((user) => {
 		if(user !== null && req.body.password === user.password) {
 			req.session.user = user;
-			res.redirect('profile');
+			res.redirect('/');
 		} else {
 			res.redirect('/?message=' + encodeURIComponent("Invalid email or password.")); //This one does not seem to trigger
 		} 
-	}, function (error) {
+	}, (error)=> {
 		res.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
 	});
 });
 
-app.get('/logout', function (req, res) {
+app.get('/logout', (req, res)=> {
     req.session.destroy(function(error) {
         if(error) {
             throw error;
@@ -204,7 +211,7 @@ app.post('/post', (req,res) => {
 					where: {
 						email: req.session.user.email
 					}
-				}).then(function(user){
+				}).then((user)=>{
 					return Post.create({
 						title: req.body.title,
 						body: req.body.message,
