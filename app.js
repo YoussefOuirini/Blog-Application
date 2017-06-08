@@ -149,40 +149,19 @@ app.get('/post', (req,res) =>{
     }
     Post.sync()
     	.then(function(){
-    		Comment.findAll()
-    			.then((comments)=>{
-    				let promises = []
-    				for (var i=0; i < comments.length; i++) {
-    					promises.push(Comment.findOne({
-    						where: {
-    							id: comments[i].postId
-    						}
-    					}));
-    				}
-    				Promise.all(promises)
-    				.then()
-    				    Post.findAll()
-			    			.then(function(posts){
-			    				// User.findAll()
-			    				let promises = []
-			    				for (var i = 0; i < posts.length; i++) {
-			    					promises.push(User.findOne({
-			    						where: {
-			    							// id: i}
-			    							id: posts[i].userId}
-			    						}));
-			    				}
-			    				Promise.all(promises)
-			    				.then((users) => {
-			    					// console.log(posts);
-			    					// console.log(users);
-				    				res.render('views/post', {
-				    					posts: posts,
-				    					users: users,
-				    					comments: comments
-				    				})
-			    				})
-    			}).then().catch(error => console.log(error))
+    		User.findAll()
+    			.then((users)=>{
+    				Post.findAll({include: [{
+		    				model: Comment,
+		    				as: 'comments'
+		    			}]
+		    		})
+		    		.then((posts)=>{
+		    			res.render('views/post', {
+		    				posts: posts,
+		    				users: users
+		    			})
+		    		})
     			})
     	})
     	.then().catch(error=> console.log(error))
@@ -190,52 +169,27 @@ app.get('/post', (req,res) =>{
 
 app.get('/myposts', (req,res) =>{
 	var user = req.session.user;
-	console.log(user)
 	if (user === undefined) {
         res.redirect('/?message=' + encodeURIComponent("Please log in to view and post messages!"));
     }
-    Post.sync()
-    	.then(function(){
-    		Comment.findAll()
-    			.then((comments)=>{
-    				let promises = []
-    				for (var i=0; i < comments.length; i++) {
-    					promises.push(Comment.findOne({
-    						where: {
-    							id: comments[i].postId
-    						}
-    					}));
-    				}
-    				Promise.all(promises)
-				.then()
-				
-				    Post.findAll({
-				    	where: {
-				    		userId: user.id
-				    	}
-				    })
-	    			.then(function(posts){
-	    				let promises = []
-	    				for (var i = 0; i < posts.length; i++) {
-	    					promises.push(User.findOne({
-	    						where: {
-	    							id: posts[i].userId}
-	    						}));
-	    				}
-	    				Promise.all(promises)
-    				.then((users) => {
-    					console.log(posts);
-    					console.log(users);
-	    				res.render('views/post', {
-	    					posts: posts,
-	    					users: users,
-	    					comments: comments
-	    				})
-    				})
-    			}).then().catch(error => console.log(error))
-    			})
-    	})
-    	.then().catch(error=> console.log(error))
+	Post.findAll({
+		where: {
+			userId: user.id
+		},
+		include:[{
+			model: Comment,
+			as: 'comments'
+		}]
+	})
+	.then((posts)=>{
+		User.findAll().then((users)=>{
+			res.render('views/post', {
+				posts: posts,
+				users: users
+			})
+		})
+	})
+	.then().catch(error => console.log(error))
 });
 
 app.post('/post', (req,res) => {
@@ -246,7 +200,6 @@ app.post('/post', (req,res) => {
 	else {
 		Post.sync()
 			.then()
-			console.log('email is: ' + req.session.user.email);
 				User.findOne({
 					where: {
 						email: req.session.user.email
@@ -258,13 +211,6 @@ app.post('/post', (req,res) => {
 						userId: user.id
 					})
 				}).then().catch(error=> console.log(error))
-			//doe een query findOne met req.session.user.email als argument
-			//.then() --> return Post.create
-				// return Post.create({
-				// 	title: req.body.title,
-				// 	body: req.body.message,
-				// 	userId: req.session.user.email
-				// })
 			.then(function() {
 				res.redirect('/post');
 			})

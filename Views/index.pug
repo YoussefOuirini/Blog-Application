@@ -3,6 +3,9 @@ html
 		title Index
 	body
 		nav
+			if user
+				div
+					a(href="/logout") Logout!
 			div
 				a(href= "/register") Register!
 			div
