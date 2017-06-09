@@ -17,7 +17,7 @@ html
 		each post in posts
 			each user in users
 				if post.userId===user.id
-					h2 #{user.firstname} #{user.lastname} said:
+					h2 #{user.firstname} #{user.lastname} posted at #{post.createdAt}:
 					h3 #{post.title}
 					p #{post.body}
 					each comment in post.comments

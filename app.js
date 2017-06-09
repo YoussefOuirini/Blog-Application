@@ -154,24 +154,27 @@ app.get('/post', (req,res) =>{
 	if (user === undefined) {
         res.redirect('/?message=' + encodeURIComponent("Please log in to view and post messages!"));
     }
-    Post.sync()
-    	.then(function(){
-    		User.findAll()
-    			.then((users)=>{
-    				Post.findAll({include: [{
-		    				model: Comment,
-		    				as: 'comments'
-		    			}]
-		    		})
-		    		.then((posts)=>{
-		    			res.render('views/post', {
-		    				posts: posts,
-		    				users: users
-		    			})
-		    		})
-    			})
-    	})
-    	.then().catch(error=> console.log(error))
+    else {
+	    Post.sync()
+	    	.then(function(){
+	    		User.findAll()
+	    			.then((users)=>{
+	    				Post.findAll({include: [{
+			    				model: Comment,
+			    				as: 'comments'
+			    			}],
+			    			order: '"updatedAt" DESC'
+			    		})
+			    		.then((posts)=>{
+			    			res.render('views/post', {
+			    				posts: posts,
+			    				users: users
+			    			})
+			    		})
+	    			})
+	    	})
+	    	.then().catch(error=> console.log(error))
+	}
 });
 
 app.get('/myposts', (req,res) =>{
@@ -179,24 +182,27 @@ app.get('/myposts', (req,res) =>{
 	if (user === undefined) {
         res.redirect('/?message=' + encodeURIComponent("Please log in to view and post messages!"));
     }
-	Post.findAll({
-		where: {
-			userId: user.id
-		},
-		include:[{
-			model: Comment,
-			as: 'comments'
-		}]
-	})
-	.then((posts)=>{
-		User.findAll().then((users)=>{
-			res.render('views/post', {
-				posts: posts,
-				users: users
+    else {
+		Post.findAll({
+			where: {
+				userId: user.id
+			},
+			include:[{
+				model: Comment,
+				as: 'comments'
+			}],
+			order: '"updatedAt" DESC'
+		})
+		.then((posts)=>{
+			User.findAll().then((users)=>{
+				res.render('views/post', {
+					posts: posts,
+					users: users
+				})
 			})
 		})
-	})
-	.then().catch(error => console.log(error))
+		.then().catch(error => console.log(error))
+	}
 });
 
 app.post('/post', (req,res) => {
