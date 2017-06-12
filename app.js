@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 const session= require('express-session');
+const bcrypt= require('bcrypt-nodejs');
 
 // Setting up the link to the database.
 const sequelize= new Sequelize('blog_app', process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
@@ -45,6 +46,8 @@ Post.hasMany(Comment);
 Comment.belongsTo(User);
 User.hasMany(Comment);
 
+sequelize.sync({force: false}) //Change false to true to wipe clean the whole database.
+
 // Creates session when user logs in
 app.use(session({
 	secret: `#{process.env.SECRET_SESSION}`,
@@ -67,7 +70,7 @@ app.get('/register', (req,res) =>{
 
 app.post('/register', bodyParser.urlencoded({extended:true}), (req,res) => {
 	User.sync()
-		.then(function(){
+	.then(function(){
 			// Finds if the email is already in the database.
 			User.findOne({
 				where: {
@@ -80,22 +83,27 @@ app.post('/register', bodyParser.urlencoded({extended:true}), (req,res) => {
 				return;
 			}
 			else {
-				User.sync()
-					.then(function(){
-						return User.create({
-							firstname: req.body.firstname,
-							lastname: req.body.lastname,
-							email: req.body.email,
-							password: req.body.password
-						})
-					})
-					.then(function(){
-						res.render('views/login')
-					})
-					.then().catch(error => console.log(error))
-			}
-		})
-		.then().catch(error => console.log(error))
+				bcrypt.hash(req.body.password, null, null, (err, hash)=>{
+							// Store hash in your password DB
+							if (err) {
+								throw err;
+							} 
+							User.sync()
+							.then(()=>{
+								User.create({
+									firstname: req.body.firstname,
+									lastname: req.body.lastname,
+									email: req.body.email,
+									password: hash
+								})
+							})
+							.then(function(){
+								res.render('views/login')
+							})
+							.then().catch(error=> console.log(error))
+				})
+			}})
+			.then().catch(error => console.log(error))
 		})
 	.then().catch(error => console.log(error))
 })
@@ -129,12 +137,19 @@ app.post('/login', (req, res)=>{
 			email:req.body.email
 		}
 	}).then((user) => {
-		if(user !== null && req.body.password === user.password) {
-			req.session.user = user;
-			res.redirect('/');
-		} else {
-			res.redirect('/?message=' + encodeURIComponent("Invalid email or password.")); //This one does not seem to trigger
-		} 
+		bcrypt.compare(req.body.password, user.password, (err, data)=>{
+			if (err) {
+				throw err;
+			} else {
+				console.log(data);
+				if(user !== null && data === true) {
+					req.session.user = user;
+					res.redirect('/');
+				} else {
+					res.redirect('/?message=' + encodeURIComponent("Invalid email or password.")); //This one does not seem to trigger
+				} 
+			}
+		});
 	}, (error)=> {
 		res.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
 	});
